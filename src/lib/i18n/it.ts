@@ -1,0 +1,99 @@
+export const it = {
+	tagline: 'Cresci tu, cresciamo insieme',
+	nav: { sheet: 'Scheda', quests: 'Quest', community: 'Comunità', settings: 'Impostazioni' },
+	home: {
+		title: 'Il personaggio sei tu.',
+		lead: 'Un gioco di ruolo per la vita reale. Rispondi con sincerità, ricevi sfide su misura, cresci davvero. Poi unisci la tua crescita a quella degli altri per obiettivi che nessuno raggiunge da solo.',
+		start: 'Crea il tuo personaggio',
+		continue: 'Torna alla tua scheda',
+		points: [
+			['Barare non serve', 'Le sfide si calibrano sui valori che dichiari. Se ti gonfi, ricevi sfide impossibili e non cresci.'],
+			['Nessuna vetrina', 'Niente amici, follower o like. La tua scheda la vedi solo tu.'],
+			['Resta sul tuo telefono', 'Nessun account, nessun server. I tuoi dati non lasciano questo dispositivo.']
+		],
+		manifesto: 'Leggi il manifesto'
+	},
+	create: {
+		step: 'Passo',
+		of: 'di',
+		nameLabel: 'Come vuoi chiamare il tuo personaggio?',
+		nameHelp: 'Puoi usare il tuo nome o un soprannome. Lo vedi solo tu.',
+		profileTitle: 'Chi sei',
+		profileHelp: 'Servono per confrontarti con chi ha la tua età e la tua corporatura, non con tutti.',
+		age: 'Età',
+		sex: 'Sesso biologico',
+		sexes: { m: 'Maschile', f: 'Femminile', x: 'Preferisco non dirlo' },
+		weight: 'Peso (kg)',
+		tooYoung: 'Koinon è pensato per chi ha almeno 16 anni.',
+		honesty: 'Rispondi con sincerità. Un valore gonfiato ti darà sfide che non riuscirai a completare.',
+		skip: 'Salta',
+		next: 'Avanti',
+		back: 'Indietro',
+		focusTitle: 'Su cosa vuoi crescere?',
+		focusHelp: 'Scegli da 1 a 5 abilità. Potrai cambiarle in seguito.',
+		locked: 'si sblocca al livello',
+		resultTitle: 'Ecco il tuo personaggio',
+		resultHelp: 'Questi valori descrivono te oggi. Il livello parte da 1 per tutti: lo alzano solo le sfide completate.',
+		capped: 'Alcune risposte superano ciò che il questionario può misurare: i valori sono stati fermati a 16. Oltre servono prove certificate.',
+		confirm: 'Inizia'
+	},
+	sheet: {
+		level: 'Livello',
+		xp: 'XP',
+		toNext: 'al prossimo livello',
+		attributes: 'Attributi',
+		skills: 'Abilità',
+		noSkills: 'Nessuna abilità ancora allenata.',
+		recalibrate: 'Sono passati 3 mesi: rifai il questionario per aggiornare i valori.',
+		scaleNote: '10 = media per età e sesso · 20 = vertice umano',
+		history: 'Andamento'
+	},
+	quests: {
+		active: 'In corso',
+		none: 'Nessuna quest in corso. Scegline una qui sotto.',
+		max: 'Hai già 3 quest in corso. Concludine una prima di iniziarne un\'altra.',
+		attrTitle: 'Sfide di calibrazione',
+		attrHelp: 'Sono tarate sui tuoi valori. Se le fallisci 3 volte di fila, il valore scende di 1.',
+		skillTitle: 'Quest delle tue abilità',
+		skillEmpty: 'Hai completato tutte le quest disponibili per ora. Aggiungi un\'abilità nelle impostazioni.',
+		start: 'Accetta',
+		done: 'Fatto',
+		failed: 'Non ci sono riuscito',
+		abandon: 'Abbandona',
+		due: 'Scade il',
+		overdue: 'Scaduta',
+		verification: { self: 'Sulla fiducia', evidence: 'Con una prova', peer: 'Certificata da 3 persone' },
+		peerLocked: 'Le quest certificate arrivano con la comunità (Fase 2).',
+		completed: 'Completate',
+		days: 'gg',
+		honestyReminder: 'Segna "Fatto" solo se l\'hai fatto davvero. L\'unica persona che inganneresti sei tu.'
+	},
+	community: {
+		title: 'Le Grandi Opere',
+		lead: 'Obiettivi troppo grandi per una persona sola, scomposti in contributi concreti. Arriveranno con la Fase 2, insieme alle gilde e alla certificazione reciproca.',
+		example: 'Esempio: contribuire alla cura del cancro',
+		branches: [
+			['Donare', 'Sangue, plasma, iscrizione al registro dei donatori di midollo.'],
+			['Calcolare', 'Mettere a disposizione il proprio computer a progetti come Folding@home.'],
+			['Classificare', 'Analizzare immagini di ricerca su piattaforme di scienza partecipata come Zooniverse.'],
+			['Studiare', 'Percorsi nel ramo Mente verso biologia, medicina, statistica.'],
+			['Sostenere', 'Raccolte fondi solo per enti di ricerca senza scopo di lucro verificati.']
+		],
+		scales: 'Quattro scale: quartiere, città, nazione, Grande Opera.',
+		noFriends: 'Nessun amico, nessun follower: ci si incontra dentro le quest, attorno a un obiettivo.'
+	},
+	settings: {
+		language: 'Lingua',
+		focus: 'Abilità su cui cresci',
+		data: 'I tuoi dati',
+		dataHelp: 'Tutto è salvato solo su questo dispositivo. Puoi scaricarne una copia o cancellarlo.',
+		export: 'Scarica una copia',
+		import: 'Carica una copia',
+		reset: 'Cancella tutto',
+		resetConfirm: 'Cancellare il personaggio da questo dispositivo? Non si può annullare.',
+		recalibrate: 'Rifai il questionario',
+		about: 'Koinon è open source (AGPL-3.0). Nessuna pubblicità, nessun tracciamento.',
+		saved: 'Salvato'
+	},
+	errors: { max_active: 'Hai già 3 quest in corso.', not_available: 'Quest non disponibile.', needs_peers: 'Serve la certificazione della comunità.', not_active: 'Quest non attiva.' }
+};
