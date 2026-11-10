@@ -12,7 +12,9 @@ export default defineConfig({
 			// Sito statico: nessun server, i dati restano sul dispositivo.
 			adapter: adapter(),
 			// Rotte con # : funziona su qualsiasi hosting statico, anche in una sottocartella.
-			router: { type: 'hash' }
+			router: { type: 'hash' },
+			// Cartella dei file generati (alcuni hosting riservano i nomi che iniziano con _).
+			appDir: 'app'
 		})
 	],
 	test: { include: ['src/**/*.test.ts'] }

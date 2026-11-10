@@ -25,8 +25,11 @@
 		if (!f) return;
 		try { await importJson(await f.text()); msg = ui().settings.saved; } catch { msg = 'File non valido / invalid file'; }
 	}
+	let confirming = $state(false);
 	async function wipe() {
-		if (confirm(ui().settings.resetConfirm)) { await reset(); goto('#/'); }
+		if (!confirming) { confirming = true; return; }
+		await reset();
+		goto('#/');
 	}
 </script>
 
@@ -61,8 +64,9 @@
 				<a class="btn ghost" href="#/crea?ricalibra=1">{ui().settings.recalibrate}</a>
 				<button class="ghost" onclick={download}>{ui().settings.export}</button>
 				<label class="btn ghost filebtn">{ui().settings.import}<input type="file" accept="application/json" onchange={upload} hidden /></label>
-				<button class="danger" onclick={wipe}>{ui().settings.reset}</button>
+				<button class="danger" onclick={wipe}>{confirming ? `${ui().settings.reset}?` : ui().settings.reset}</button>
 			</div>
+			{#if confirming}<p class="notice">{ui().settings.resetConfirm} <button class="quiet" onclick={() => (confirming = false)}>{ui().create.back}</button></p>{/if}
 			{#if msg}<p class="small">{msg}</p>{/if}
 		</div>
 	{/if}
