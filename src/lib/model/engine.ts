@@ -142,9 +142,17 @@ export function attributeQuest(c: Character, a: AttributeId): { title: Text; des
 	return { title: spec.title(n), description: spec.description(n), days: spec.days, target: n };
 }
 
-export function availableAttributeQuests(c: Character): AttributeId[] {
+/** Data da cui la sfida di calibrazione torna disponibile dopo un successo (null = già disponibile). */
+export function attributeNextAvailableAt(c: Character, a: AttributeId, now = new Date()): Date | null {
+	const last = c.quests.filter((q) => q.skill === `attr:${a}` && q.status === 'done').at(-1);
+	if (!last) return null;
+	const at = new Date(new Date(last.startedAt).getTime() + ATTR_QUESTS[a].days * DAY);
+	return at.getTime() > now.getTime() ? at : null;
+}
+
+export function availableAttributeQuests(c: Character, now = new Date()): AttributeId[] {
 	const active = new Set(activeQuests(c).map((q) => q.skill));
-	return ATTRIBUTES.filter((a) => !active.has(`attr:${a}`));
+	return ATTRIBUTES.filter((a) => !active.has(`attr:${a}`) && !attributeNextAvailableAt(c, a, now));
 }
 
 // ——— Azioni ———
@@ -169,7 +177,7 @@ export function startSkillQuest(c: Character, questId: string, now = new Date())
 
 export function startAttributeQuest(c: Character, a: AttributeId, now = new Date()): Character {
 	if (activeQuests(c).length >= MAX_ACTIVE_QUESTS) throw new RuleError('max_active');
-	if (!availableAttributeQuests(c).includes(a)) throw new RuleError('not_available');
+	if (!availableAttributeQuests(c, now).includes(a)) throw new RuleError('not_available');
 	const aq = attributeQuest(c, a);
 	const run: QuestRun = {
 		runId: newRunId(now), questId: `attr:${a}`, skill: `attr:${a}`, title: aq.title, description: aq.description,
@@ -181,9 +189,14 @@ export function startAttributeQuest(c: Character, a: AttributeId, now = new Date
 
 const round1 = (x: number) => Math.round(x * 10) / 10;
 
+/** Margine dopo la scadenza per segnare una quest come fatta (chi la registra il giorno dopo). */
+export const GRACE_DAYS = 1;
+
 export function completeQuest(c: Character, runId: string, now = new Date()): Character {
 	const run = c.quests.find((q) => q.runId === runId && q.status === 'active');
 	if (!run) throw new RuleError('not_active');
+	// Fuori tempo massimo la sfida non conta: "scrivi 10 righe questa settimana" vale solo entro la settimana.
+	if (now.getTime() > new Date(run.dueAt).getTime() + GRACE_DAYS * DAY) throw new RuleError('overdue');
 	const quests = c.quests.map((q) => (q.runId === runId ? { ...q, status: 'done' as const, closedAt: iso(now) } : q));
 	let { skills, attributes } = c;
 	if (run.skill.startsWith('attr:')) {
@@ -239,3 +252,6 @@ export const recalibrationDue = (c: Character, now = new Date()) =>
 	now.getTime() - new Date(c.lastCalibrationAt).getTime() > RECALIBRATION_DAYS * DAY;
 
 export const isOverdue = (q: QuestRun, now = new Date()) => q.status === 'active' && new Date(q.dueAt).getTime() < now.getTime();
+/** Scaduta anche oltre il margine: si può solo dichiarare non riuscita o abbandonare. */
+export const isExpired = (q: QuestRun, now = new Date()) =>
+	q.status === 'active' && new Date(q.dueAt).getTime() + GRACE_DAYS * DAY < now.getTime();

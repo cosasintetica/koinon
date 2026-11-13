@@ -9,7 +9,8 @@ import { version } from '$app/env';
 const sw = self as unknown as ServiceWorkerGlobalScope;
 const CACHE = `koinon-${version}`;
 const path = (f: string | { path: string }) => (typeof f === 'string' ? f : f.path);
-const ASSETS = ['./', ...[...immutable, ...assets].map(path)];
+// File nascosti (es. .nojekyll) esclusi: molti hosting non li servono e farebbero fallire l'installazione.
+const ASSETS = ['./', ...[...immutable, ...assets].map(path).filter((p) => !p.split('/').pop()!.startsWith('.'))];
 
 sw.addEventListener('install', (e) => {
 	e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => sw.skipWaiting()));
@@ -20,6 +21,6 @@ sw.addEventListener('activate', (e) => {
 sw.addEventListener('fetch', (e) => {
 	if (e.request.method !== 'GET' || new URL(e.request.url).origin !== sw.location.origin) return;
 	e.respondWith(
-		caches.match(e.request, { ignoreSearch: true }).then((hit) => hit ?? fetch(e.request).catch(() => caches.match('./') as Promise<Response>))
+		caches.match(e.request, { ignoreSearch: true, ignoreVary: true }).then((hit) => hit ?? fetch(e.request).catch(() => caches.match('./') as Promise<Response>))
 	);
 });

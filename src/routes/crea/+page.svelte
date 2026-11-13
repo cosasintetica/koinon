@@ -92,7 +92,7 @@
 			<p class="notice">{ui().create.honesty}</p>
 			{#each QUESTIONS.filter((q) => q.attribute === attr) as q (q.id)}
 				<div class="card stack">
-					<label for={q.id}>{tx(q.prompt)}</label>
+					<label for={q.id} id="{q.id}-label">{tx(q.prompt)}</label>
 					{#if q.help}<p class="small muted">{tx(q.help)}</p>{/if}
 					{#if q.kind === 'number'}
 						<div class="row">
@@ -102,7 +102,7 @@
 							{#if q.optional}<button class="quiet" onclick={() => (answers[q.id] = -1)}>{ui().create.skip}</button>{/if}
 						</div>
 					{:else}
-						<div class="choices" role="radiogroup" id={q.id}>
+						<div class="choices" role="radiogroup" id={q.id} aria-labelledby="{q.id}-label">
 							{#each q.options ?? [] as o, k (k)}
 								<button role="radio" aria-checked={answers[q.id] === o.value && answers[`${q.id}#`] === k}
 									class:chosen={answers[`${q.id}#`] === k}

@@ -66,6 +66,7 @@ export const en: Dict = {
 		overdue: 'Overdue',
 		verification: { self: 'On trust', evidence: 'With proof', peer: 'Certified by 3 people' },
 		peerLocked: 'Certified quests arrive with the community (Phase 2).',
+		expired: 'Time is up: this one does not count. You can try again.',
 		cooldown: 'available again from',
 		repeat: 'Repeat earlier-grade quests (half XP)',
 		nextGrade: 'Next grade',
@@ -87,6 +88,24 @@ export const en: Dict = {
 		scales: 'Four scales: neighbourhood, city, nation, Great Work.',
 		noFriends: 'No friends, no followers: people meet inside quests, around a goal.'
 	},
+	guide: {
+		link: 'How it works',
+		title: 'How Koinon works',
+		lead: 'Koinon is a role-playing game where the character is you. Here are the rules, all public in the code.',
+		sections: [
+			['The sheet', 'Six attributes describe who you are today: Strength, Endurance, Dexterity, Intellect, Balance, Empathy. The scale runs from 1 to 20: 10 is the average for your age and sex, 20 the documented human peak. Each point costs more than the last.'],
+			['Your level', 'Everyone starts at level 1. Only completed quests raise it: values declared in the questionnaire give no points.'],
+			['Skills', 'Pick up to 5 skills in seven branches: Body, Mind, Creativity, Relationships, Spirit, Craft and Community (from level 5). Each skill has five grades: Novice, Apprentice, Practitioner, Expert, Master.'],
+			['Quests', 'You can have at most 3 quests in progress, each with a deadline. A completed quest comes back only after its duration has passed. Quests below your grade give half XP. More than one day past the deadline, a quest can no longer be marked done.'],
+			['Calibration challenges', 'They are tuned to your attributes: declare more and you get harder challenges. Fail 3 in a row on the same attribute and its value drops by 1. Succeed and it rises a little.'],
+			['Why cheating is pointless', 'Inflating your sheet only gives you impossible challenges. Nobody sees your sheet, so there is no one to impress. The questionnaire tops out at 16: beyond that you need proof certified by other people.'],
+			['Every 3 months', 'The app suggests retaking the questionnaire to update your sheet to who you have become.'],
+			['Privacy', 'No account and no server: your sheet stays on this device. In Settings you can download a copy or delete it.'],
+			['What is coming', 'Phase 2: guilds, collective quests and certification by 3 randomly drawn people. Phase 3: the Great Works, linked to real projects.']
+		],
+		manifesto: 'Read the full manifesto',
+		code: 'Source code on GitHub'
+	},
 	settings: {
 		language: 'Language',
 		focus: 'Skills you are growing',
@@ -100,5 +119,5 @@ export const en: Dict = {
 		about: 'Koinon is open source (AGPL-3.0). No ads, no tracking.',
 		saved: 'Saved'
 	},
-	errors: { max_active: 'You already have 3 quests in progress.', not_available: 'Quest not available.', needs_peers: 'Needs community certification.', not_active: 'Quest not active.' }
+	errors: { max_active: 'You already have 3 quests in progress.', not_available: 'Quest not available.', needs_peers: 'Needs community certification.', overdue: 'The time for this quest is over.', not_active: 'Quest not active.' }
 };

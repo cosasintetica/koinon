@@ -13,6 +13,7 @@
 		{:else}
 			<a class="btn" href="#/crea">{ui().home.start}</a>
 		{/if}
+		<a class="btn ghost" href="#/guida">{ui().guide.link}</a>
 	</div>
 </section>
 

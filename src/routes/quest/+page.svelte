@@ -4,7 +4,7 @@
 	import { tx, ui, i18n } from '#lib/i18n/index.svelte.ts';
 	import {
 		availableSkillQuests, availableAttributeQuests, attributeQuest, startSkillQuest, startAttributeQuest,
-		completeQuest, failQuest, abandonQuest, isOverdue, MAX_ACTIVE_QUESTS, questXp, skillGrade, isBranchUnlocked, nextAvailableAt
+		completeQuest, failQuest, abandonQuest, isOverdue, MAX_ACTIVE_QUESTS, questXp, skillGrade, isBranchUnlocked, nextAvailableAt, isExpired
 	} from '#lib/model/engine.ts';
 	import { ATTRIBUTE_NAMES, GRADE_NAMES, skillById } from '#lib/data/skills.ts';
 	import type { Character, QuestTemplate } from '#lib/model/types.ts';
@@ -59,7 +59,11 @@
 					<h3>{tx(q.title)}</h3>
 					<p class="muted">{tx(q.description)}</p>
 					<div class="row">
-						<button onclick={() => run((x) => completeQuest(x, q.runId))}>{ui().quests.done} · +{q.xp} XP</button>
+						{#if isExpired(q)}
+							<span class="small muted">{ui().quests.expired}</span>
+						{:else}
+							<button onclick={() => run((x) => completeQuest(x, q.runId))}>{ui().quests.done} · +{q.xp} XP</button>
+						{/if}
 						<button class="ghost" onclick={() => run((x) => failQuest(x, q.runId))}>{ui().quests.failed}</button>
 						{#if !q.skill.startsWith('attr:')}<button class="quiet" onclick={() => run((x) => abandonQuest(x, q.runId))}>{ui().quests.abandon}</button>{/if}
 					</div>

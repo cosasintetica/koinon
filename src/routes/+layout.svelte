@@ -34,8 +34,8 @@
 			<img src={favicon} alt="" width="28" height="28" />
 			<span>Koinon</span>
 		</a>
-		<button class="quiet lang" onclick={() => setLang(i18n.lang === 'it' ? 'en' : 'it')} aria-label="Language">
-			{i18n.lang === 'it' ? 'EN' : 'IT'}
+		<button class="quiet lang" onclick={() => setLang(i18n.lang === 'it' ? 'en' : 'it')} title="Lingua / Language">
+			<span class="sr-only">Lingua / Language:</span> {i18n.lang === 'it' ? 'EN' : 'IT'}
 		</button>
 	</div>
 	{#if game.character}
@@ -54,7 +54,7 @@
 </main>
 
 <footer class="wrap small muted">
-	Koinon · {ui().tagline} · AGPL-3.0
+	Koinon · {ui().tagline} · <a href="#/guida">{ui().guide.link}</a> · <a href="https://github.com/cosasintetica/koinon" target="_blank" rel="noopener noreferrer">AGPL-3.0</a>
 </footer>
 
 <style>

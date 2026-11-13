@@ -81,6 +81,14 @@ describe('barare non conviene', () => {
 		expect(c.attributes.forza.failStreak).toBe(0);
 		expect(c.attributes.forza.value).toBeCloseTo(10.2, 1);
 	});
+	it('una sfida di calibrazione riuscita si ripete solo dopo una settimana', () => {
+		const day = (d: number) => new Date(Date.UTC(2026, 0, d));
+		let c = createCharacter('A', p, avg, []);
+		c = startAttributeQuest(c, 'forza', day(1));
+		c = completeQuest(c, c.quests.at(-1)!.runId, day(2));
+		expect(() => startAttributeQuest(c, 'forza', day(3))).toThrow(RuleError);
+		expect(() => startAttributeQuest(c, 'forza', day(8))).not.toThrow();
+	});
 });
 
 describe('quest e livelli', () => {
@@ -124,6 +132,15 @@ describe('quest e livelli', () => {
 		c = completeQuest(c, c.quests.at(-1)!.runId, day(2));
 		expect(() => startSkillQuest(c, 'scrittura-1', day(3))).toThrow(RuleError);
 		expect(() => startSkillQuest(c, 'scrittura-1', day(8))).not.toThrow();
+	});
+	it('una quest scaduta oltre il giorno di margine non si può segnare come fatta', () => {
+		const day = (d: number) => new Date(Date.UTC(2026, 0, d));
+		let c = createCharacter('A', p, avg, ['scrittura']);
+		c = startSkillQuest(c, 'scrittura-1', day(1));
+		const id = c.quests.at(-1)!.runId;
+		expect(() => completeQuest(c, id, day(10))).toThrow(RuleError);
+		expect(() => completeQuest(c, id, day(8))).not.toThrow();
+		expect(() => failQuest(c, id, day(10))).not.toThrow();
 	});
 	it('senza certificazione si resta al massimo Praticante', () => {
 		expect(skillGrade(5000)).toBe(3);

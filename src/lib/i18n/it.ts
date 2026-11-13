@@ -64,6 +64,7 @@ export const it = {
 		overdue: 'Scaduta',
 		verification: { self: 'Sulla fiducia', evidence: 'Con una prova', peer: 'Certificata da 3 persone' },
 		peerLocked: 'Le quest certificate arrivano con la comunità (Fase 2).',
+		expired: 'Tempo scaduto: questa volta non conta. Puoi riprovare.',
 		cooldown: 'di nuovo disponibile dal',
 		repeat: 'Ripeti le quest dei gradi precedenti (metà XP)',
 		nextGrade: 'Prossimo grado',
@@ -85,6 +86,24 @@ export const it = {
 		scales: 'Quattro scale: quartiere, città, nazione, Grande Opera.',
 		noFriends: 'Nessun amico, nessun follower: ci si incontra dentro le quest, attorno a un obiettivo.'
 	},
+	guide: {
+		link: 'Come funziona',
+		title: 'Come funziona Koinon',
+		lead: 'Koinon è un gioco di ruolo in cui il personaggio sei tu. Ecco le regole, tutte pubbliche nel codice.',
+		sections: [
+			['La scheda', 'Sei attributi descrivono chi sei oggi: Forza, Resistenza, Destrezza, Intelletto, Equilibrio, Empatia. La scala va da 1 a 20: 10 è la media di chi ha la tua età e il tuo sesso, 20 il vertice umano documentato. Ogni punto in più costa più del precedente.'],
+			['Il livello', 'Tutti partono dal livello 1. Il livello sale solo con le quest completate: i valori dichiarati nel questionario non danno punti.'],
+			['Le abilità', 'Scegli fino a 5 abilità in sette rami: Corpo, Mente, Creatività, Relazioni, Spirito, Mestiere e Comunità (dal livello 5). Ogni abilità ha cinque gradi: Novizio, Apprendista, Praticante, Esperto, Maestro.'],
+			['Le quest', 'Hai al massimo 3 quest in corso, ognuna con una scadenza. Una quest fatta torna disponibile solo quando è passata la sua durata. Quelle sotto il tuo grado valgono metà XP. Oltre un giorno dalla scadenza non si può più segnare come fatta.'],
+			['Le sfide di calibrazione', 'Sono tarate sui tuoi attributi: chi dichiara di più riceve sfide più dure. Se ne fallisci 3 di fila sullo stesso attributo, il valore scende di 1. Se le superi, sale di poco.'],
+			['Perché barare non serve', 'Gonfiare la scheda ti dà solo sfide impossibili. Nessuno vede la tua scheda, quindi non c\'è nessuno da impressionare. Il questionario arriva al massimo a 16: oltre servono prove certificate da altre persone.'],
+			['Ogni 3 mesi', 'L\'app ti propone di rifare il questionario, per aggiornare la scheda a come sei diventato.'],
+			['Privacy', 'Nessun account e nessun server: la scheda resta su questo dispositivo. Dalle Impostazioni puoi scaricarne una copia o cancellarla.'],
+			['Cosa arriverà', 'Fase 2: gilde, quest collettive e certificazione da parte di 3 persone estratte a caso. Fase 3: le Grandi Opere, collegate a progetti reali.']
+		],
+		manifesto: 'Leggi il manifesto completo',
+		code: 'Codice sorgente su GitHub'
+	},
 	settings: {
 		language: 'Lingua',
 		focus: 'Abilità su cui cresci',
@@ -98,5 +117,5 @@ export const it = {
 		about: 'Koinon è open source (AGPL-3.0). Nessuna pubblicità, nessun tracciamento.',
 		saved: 'Salvato'
 	},
-	errors: { max_active: 'Hai già 3 quest in corso.', not_available: 'Quest non disponibile.', needs_peers: 'Serve la certificazione della comunità.', not_active: 'Quest non attiva.' }
+	errors: { max_active: 'Hai già 3 quest in corso.', not_available: 'Quest non disponibile.', needs_peers: 'Serve la certificazione della comunità.', overdue: 'Il tempo per questa quest è scaduto.', not_active: 'Quest non attiva.' }
 };
