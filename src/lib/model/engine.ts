@@ -55,13 +55,25 @@ const activeQuests = (c: Character) => c.quests.filter((q) => q.status === 'acti
  * Le quest sono ripetibili (la pratica costante è il punto), ma quelle sotto il proprio grado
  * valgono metà XP: si cresce davvero solo alzando l'asticella.
  */
-export function availableSkillQuests(c: Character): QuestTemplate[] {
+export function availableSkillQuests(c: Character, now = new Date()): QuestTemplate[] {
 	const active = new Set(activeQuests(c).map((q) => q.questId));
 	return QUESTS.filter((t) => {
 		if (!c.focus.includes(t.skill) || !isBranchUnlocked(c, t.skill)) return false;
-		if (active.has(t.id)) return false;
+		if (active.has(t.id) || nextAvailableAt(c, t, now)) return false;
 		return t.grade <= skillGrade(c.skills[t.skill] ?? 0);
 	}).sort((a, b) => b.grade - a.grade);
+}
+
+/**
+ * Una quest completata si può ripetere solo quando è trascorsa la sua durata
+ * (una quest settimanale, una volta a settimana): impedisce di accumulare XP a raffica.
+ * Restituisce la data da cui torna disponibile, oppure null se lo è già.
+ */
+export function nextAvailableAt(c: Character, t: QuestTemplate, now = new Date()): Date | null {
+	const last = c.quests.filter((q) => q.questId === t.id && q.status === 'done').at(-1);
+	if (!last) return null;
+	const at = new Date(new Date(last.startedAt).getTime() + t.days * DAY);
+	return at.getTime() > now.getTime() ? at : null;
 }
 
 /** XP che una quest darebbe ora a questo personaggio. */
@@ -144,7 +156,7 @@ export class RuleError extends Error {}
 
 export function startSkillQuest(c: Character, questId: string, now = new Date()): Character {
 	if (activeQuests(c).length >= MAX_ACTIVE_QUESTS) throw new RuleError('max_active');
-	const t = availableSkillQuests(c).find((q) => q.id === questId);
+	const t = availableSkillQuests(c, now).find((q) => q.id === questId);
 	if (!t) throw new RuleError('not_available');
 	if (t.verification === 'peer') throw new RuleError('needs_peers');
 	const run: QuestRun = {

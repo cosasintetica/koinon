@@ -92,7 +92,7 @@ describe('quest e livelli', () => {
 	});
 	it('un Novizio vede solo le quest del primo grado', () => {
 		const c = createCharacter('A', p, avg, ['scrittura']);
-		expect(availableSkillQuests(c).map((q) => q.id)).toEqual(['scrittura-1']);
+		expect(new Set(availableSkillQuests(c).map((q) => q.grade))).toEqual(new Set([1]));
 	});
 	it('completare quest fa salire grado e livello', () => {
 		let c = createCharacter('A', p, avg, ['scrittura']);
@@ -105,15 +105,25 @@ describe('quest e livelli', () => {
 	});
 	it('le quest si ripetono finché non si sale di grado, poi sotto grado valgono metà', () => {
 		let c = createCharacter('A', p, avg, ['scrittura']);
+		const week = (i: number) => new Date(Date.UTC(2026, 0, 1 + 7 * i));
 		for (let i = 0; i < 5; i++) {
-			c = startSkillQuest(c, 'scrittura-1');
-			c = completeQuest(c, c.quests.at(-1)!.runId);
+			c = startSkillQuest(c, 'scrittura-1', week(i));
+			c = completeQuest(c, c.quests.at(-1)!.runId, week(i));
 		}
 		expect(c.skills.scrittura).toBe(100);
 		expect(skillGrade(c.skills.scrittura)).toBe(2);
-		expect(availableSkillQuests(c).map((q) => q.id)).toEqual(['scrittura-2', 'scrittura-1']);
-		c = startSkillQuest(c, 'scrittura-1');
+		expect(new Set(availableSkillQuests(c).map((q) => q.grade))).toEqual(new Set([1, 2]));
+		expect(availableSkillQuests(c)[0].grade).toBe(2);
+		c = startSkillQuest(c, 'scrittura-1', week(5));
 		expect(c.quests.at(-1)!.xp).toBe(10);
+	});
+	it('una quest settimanale si ripete solo dopo una settimana', () => {
+		const day = (d: number) => new Date(Date.UTC(2026, 0, d));
+		let c = createCharacter('A', p, avg, ['scrittura']);
+		c = startSkillQuest(c, 'scrittura-1', day(1));
+		c = completeQuest(c, c.quests.at(-1)!.runId, day(2));
+		expect(() => startSkillQuest(c, 'scrittura-1', day(3))).toThrow(RuleError);
+		expect(() => startSkillQuest(c, 'scrittura-1', day(8))).not.toThrow();
 	});
 	it('senza certificazione si resta al massimo Praticante', () => {
 		expect(skillGrade(5000)).toBe(3);
@@ -122,5 +132,21 @@ describe('quest e livelli', () => {
 		const c = createCharacter('A', p, avg, ['volontariato']);
 		expect(isBranchUnlocked(c, 'volontariato')).toBe(false);
 		expect(availableSkillQuests(c)).toHaveLength(0);
+	});
+});
+
+describe('catalogo', () => {
+	it('id unici, abilità esistenti, testi in due lingue', async () => {
+		const { QUESTS } = await import('#lib/data/quests.ts');
+		const { SKILLS } = await import('#lib/data/skills.ts');
+		const ids = new Set(QUESTS.map((q) => q.id));
+		expect(ids.size).toBe(QUESTS.length);
+		expect(QUESTS.length).toBeGreaterThanOrEqual(150);
+		for (const q of QUESTS) {
+			expect(SKILLS.some((s) => s.id === q.skill)).toBe(true);
+			expect(q.title.it && q.title.en && q.description.it && q.description.en).toBeTruthy();
+		}
+		// ogni abilità ha almeno una quest per i gradi 1, 2 e 3
+		for (const s of SKILLS) for (const g of [1, 2, 3]) expect(QUESTS.some((q) => q.skill === s.id && q.grade === g)).toBe(true);
 	});
 });

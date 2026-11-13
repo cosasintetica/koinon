@@ -64,6 +64,9 @@ export const it = {
 		overdue: 'Scaduta',
 		verification: { self: 'Sulla fiducia', evidence: 'Con una prova', peer: 'Certificata da 3 persone' },
 		peerLocked: 'Le quest certificate arrivano con la comunità (Fase 2).',
+		cooldown: 'di nuovo disponibile dal',
+		repeat: 'Ripeti le quest dei gradi precedenti (metà XP)',
+		nextGrade: 'Prossimo grado',
 		completed: 'Completate',
 		days: 'gg',
 		honestyReminder: 'Segna "Fatto" solo se l\'hai fatto davvero. L\'unica persona che inganneresti sei tu.'

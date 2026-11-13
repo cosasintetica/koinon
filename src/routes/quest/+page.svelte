@@ -4,10 +4,11 @@
 	import { tx, ui, i18n } from '#lib/i18n/index.svelte.ts';
 	import {
 		availableSkillQuests, availableAttributeQuests, attributeQuest, startSkillQuest, startAttributeQuest,
-		completeQuest, failQuest, abandonQuest, isOverdue, MAX_ACTIVE_QUESTS, questXp
+		completeQuest, failQuest, abandonQuest, isOverdue, MAX_ACTIVE_QUESTS, questXp, skillGrade, isBranchUnlocked, nextAvailableAt
 	} from '#lib/model/engine.ts';
 	import { ATTRIBUTE_NAMES, GRADE_NAMES, skillById } from '#lib/data/skills.ts';
-	import type { Character } from '#lib/model/types.ts';
+	import type { Character, QuestTemplate } from '#lib/model/types.ts';
+	import { QUESTS } from '#lib/data/quests.ts';
 
 	$effect(() => { if (!game.character) goto('#/'); });
 
@@ -15,6 +16,24 @@
 	const active = $derived(c ? c.quests.filter((q) => q.status === 'active') : []);
 	const done = $derived(c ? c.quests.filter((q) => q.status === 'done').slice(-8).reverse() : []);
 	const full = $derived(active.length >= MAX_ACTIVE_QUESTS);
+	/** Quest raggruppate per abilità: grado attuale in vista, gradi precedenti da ripetere, anteprima del prossimo grado. */
+	const groups = $derived.by(() => {
+		if (!c) return [];
+		const avail = availableSkillQuests(c);
+		return c.focus.filter((id) => isBranchUnlocked(c, id)).map((skill) => {
+			const grade = skillGrade(c.skills[skill] ?? 0);
+			const mine = avail.filter((t) => t.skill === skill);
+			return {
+				skill, grade,
+				current: mine.filter((t) => t.grade === grade),
+				lower: mine.filter((t) => t.grade < grade),
+				next: QUESTS.find((t) => t.skill === skill && t.grade === grade + 1),
+				resting: QUESTS.filter((t) => t.skill === skill && t.grade === grade)
+					.map((t) => ({ t, at: nextAvailableAt(c, t) }))
+					.filter((r): r is { t: QuestTemplate; at: Date } => r.at !== null)
+			};
+		});
+	});
 	let error = $state('');
 
 	async function run(fn: (c: Character) => Character) {
@@ -53,25 +72,34 @@
 		<section class="stack">
 			<h2>{ui().quests.skillTitle}</h2>
 			{#if full}<p class="notice">{ui().quests.max}</p>{/if}
-			{#each availableSkillQuests(c) as t (t.id)}
+			{#snippet card(t: QuestTemplate)}
 				<article class="card quest">
 					<div class="spread">
-						<span class="row" style="gap:6px">
-							<span class="pill">{label(t.skill)}</span>
-							<span class="pill grey">{tx(GRADE_NAMES[t.grade - 1])}</span>
-						</span>
+						<span class="pill grey">{tx(GRADE_NAMES[t.grade - 1])}</span>
 						<span class="small muted">{t.days} {ui().quests.days} · {ui().quests.verification[t.verification]}</span>
 					</div>
 					<h3>{tx(t.title)}</h3>
 					<p class="muted">{tx(t.description)}</p>
-					{#if t.verification === 'peer'}
-						<p class="small muted">{ui().quests.peerLocked}</p>
-					{:else}
-						<button class="ghost" disabled={full} onclick={() => run((x) => startSkillQuest(x, t.id))}>
-							{ui().quests.start} · +{questXp(c, t)} XP
-						</button>
-					{/if}
+					<button class="ghost" disabled={full} onclick={() => run((x) => startSkillQuest(x, t.id))}>
+						{ui().quests.start} · +{questXp(c, t)} XP
+					</button>
 				</article>
+			{/snippet}
+			{#each groups as g (g.skill)}
+				<div class="group stack">
+					<h3 class="skillname">{label(g.skill)} <span class="small muted">· {tx(GRADE_NAMES[g.grade - 1])}</span></h3>
+					{#each g.current as t (t.id)}{@render card(t)}{/each}
+					{#each g.resting as r (r.t.id)}
+						<p class="small muted">{tx(r.t.title)}: {ui().quests.cooldown} {date(r.at.toISOString())}</p>
+					{/each}
+					{#if g.lower.length}
+						<details>
+							<summary class="small">{ui().quests.repeat} ({g.lower.length})</summary>
+							<div class="stack" style="margin-top:12px">{#each g.lower as t (t.id)}{@render card(t)}{/each}</div>
+						</details>
+					{/if}
+					{#if g.next}<p class="small muted">{ui().quests.nextGrade}: <strong>{tx(g.next.title)}</strong>{g.next.verification === 'peer' ? ` · ${ui().quests.peerLocked}` : ''}</p>{/if}
+				</div>
 			{:else}
 				<p class="muted">{ui().quests.skillEmpty}</p>
 			{/each}
@@ -111,5 +139,8 @@
 	.quest.active { border-color: var(--accent); }
 	.overdue { color: var(--danger); font-weight: 600; }
 	.attrgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+	.group { padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+	.skillname { margin: 8px 0 0; }
+	details summary { cursor: pointer; color: var(--accent); font-weight: 600; }
 	.done { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
 </style>

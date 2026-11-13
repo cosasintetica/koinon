@@ -2,8 +2,7 @@
 //
 // 10 = adulto medio della tua età e del tuo sesso; 20 = vertice umano documentato.
 // La scala è logaritmica: ogni punto in più costa più del precedente.
-// Valori di riferimento PROVVISORI: approssimazioni ragionevoli, da validare con fonti
-// scientifiche prima della versione 1.0 (vedi docs/riferimenti.md).
+// Fonti e livello di affidabilità di ogni valore: docs/riferimenti.md.
 
 import type { Answers, AttributeId, Profile, Text } from './types';
 
@@ -30,6 +29,19 @@ export function unscale(s: number, r: Ref): number {
 	return r.median * Math.pow(r.record / r.median, (v - 10) / 10);
 }
 
+/** Valore da una tabella per fasce d'età: [età massima esclusa, valore]. */
+const byAge = (age: number, table: [number, number][]) => (table.find(([max]) => age < max) ?? table.at(-1)!)[1];
+
+/**
+ * Flessioni consecutive, valore centrale della fascia "Good" delle norme canadesi CPAFLA
+ * riprese dall'ACSM (uomini, flessioni complete). Per le donne con flessioni complete non
+ * esiste una norma consolidata: la curva maschile è riscalata sulla media 20–29 anni (circa 11).
+ */
+const PUSHUPS_M: [number, number][] = [[30, 25], [40, 19], [50, 15], [60, 11], [Infinity, 9]];
+const PUSHUPS_F: [number, number][] = [[30, 11], [40, 9], [50, 7], [60, 5], [Infinity, 4]];
+/** Equilibrio su una gamba a occhi chiusi (Springer et al., 2007): dipende dall'età, non dal sesso. */
+const BALANCE: [number, number][] = [[40, 12], [50, 11], [60, 7], [70, 4], [Infinity, 2.5]];
+
 /** Calo fisiologico delle prestazioni fisiche dopo i 35 anni (circa 1% l'anno). */
 export function ageFactor(age: number): number {
 	return age <= 35 ? 1 : Math.max(0.45, 1 - 0.01 * (age - 35));
@@ -43,12 +55,12 @@ export function refs(p: Profile) {
 	return {
 		// rapporto massimale stimato / peso corporeo (stacco da terra o squat)
 		liftRatio: { floor: 0.15, median: sexMul(p, 1.25, 0.85) * a, record: sexMul(p, 4.5, 4.0) },
-		pushups: { floor: 0.5, median: sexMul(p, 20, 10) * a, record: 120 },
+		pushups: { floor: 0.5, median: sexMul(p, byAge(p.age, PUSHUPS_M), byAge(p.age, PUSHUPS_F)), record: 120 },
 		walkMinutes: { floor: 2, median: 45 * a, record: 1440 },
 		stairFloors: { floor: 0.5, median: 5 * a, record: 200 },
-		balanceSeconds: { floor: 0.5, median: p.age < 40 ? 25 : p.age < 50 ? 18 : p.age < 60 ? 10 : 5, record: 300 },
+		balanceSeconds: { floor: 0.5, median: byAge(p.age, BALANCE), record: 300 },
 		studyHours: { floor: 0.2, median: 3, record: 60 },
-		booksYear: { floor: 0.3, median: 5, record: 150 },
+		booksYear: { floor: 0.3, median: 4, record: 150 }, // mediana Pew Research (USA, 2016)
 		talksWeek: { floor: 0.3, median: 6, record: 60 },
 		helpsMonth: { floor: 0.3, median: 3, record: 60 }
 	} satisfies Record<string, Ref>;

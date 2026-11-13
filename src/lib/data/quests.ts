@@ -2,13 +2,14 @@
 // Per proporne una nuova aggiungi una riga con q(...) e apri una pull request.
 
 import type { Grade, QuestTemplate, Verification } from '#lib/model/types.ts';
+import { MORE_QUESTS } from './quests-more.ts';
 
 const q = (
 	id: string, skill: string, grade: Grade, days: number, verification: Verification,
 	it: [string, string], en: [string, string]
 ): QuestTemplate => ({ id, skill, grade, days, verification, title: { it: it[0], en: en[0] }, description: { it: it[1], en: en[1] } });
 
-export const QUESTS: QuestTemplate[] = [
+const BASE_QUESTS: QuestTemplate[] = [
 	// CORPO
 	q('corsa-1', 'corsa', 1, 7, 'self', ['Tre uscite', 'Cammina a passo svelto o corri piano per 20 minuti, tre volte questa settimana.'], ['Three outings', 'Walk briskly or jog for 20 minutes, three times this week.']),
 	q('corsa-2', 'corsa', 2, 14, 'self', ['Corri 3 km', 'Corri 3 km senza fermarti, anche lentamente.'], ['Run 3 km', 'Run 3 km without stopping, even slowly.']),
@@ -82,3 +83,5 @@ export const QUESTS: QuestTemplate[] = [
 	q('primo_soccorso-2', 'primo_soccorso', 2, 30, 'evidence', ['Corso BLS', 'Frequenta un corso di rianimazione cardiopolmonare.'], ['CPR course', 'Attend a CPR course.']),
 	q('primo_soccorso-3', 'primo_soccorso', 3, 90, 'evidence', ['Defibrillatore', 'Ottieni l\'abilitazione all\'uso del defibrillatore.'], ['Defibrillator', 'Get certified to use a defibrillator.'])
 ];
+
+export const QUESTS: QuestTemplate[] = [...BASE_QUESTS, ...MORE_QUESTS];

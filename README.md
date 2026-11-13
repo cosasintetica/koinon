@@ -11,8 +11,11 @@ Leggi il [Manifesto](MANIFESTO.md).
 - **Le sfide si calibrano sui valori dichiarati.** Chi si dichiara più forte riceve sfide più dure: se non sono alla sua portata, non cresce.
 - **Tre fallimenti di fila abbassano il valore di 1.** La scheda si riallinea da sola alla persona reale.
 - **Il livello parte da 1 per tutti.** Lo alzano solo le quest completate, mai i valori dichiarati.
+- **Una quest si ripete solo quando è passata la sua durata.** Niente XP a raffica.
 - **Il questionario arriva al massimo a 16 su 20.** Oltre servono prove certificate da altre persone (Fase 2).
 - **Nessuno vede la tua scheda.** Non ci sono amici, follower o classifiche da impressionare.
+
+Le quest già completate si ripetono solo dopo la loro durata. I valori di riferimento e le loro fonti sono in [docs/riferimenti.md](docs/riferimenti.md).
 
 Tutte le regole sono in [`src/lib/model/engine.ts`](src/lib/model/engine.ts) e [`src/lib/model/scoring.ts`](src/lib/model/scoring.ts), con test in [`engine.test.ts`](src/lib/model/engine.test.ts).
 
@@ -25,7 +28,7 @@ Nessun account, nessun server, nessun tracciamento. La scheda è salvata solo ne
 | Fase | Contenuto | Stato |
 |---|---|---|
 | 0 · Fondamenta | Manifesto, licenza, modello dati, prototipo | In corso |
-| 1 · App personale | Questionario, scheda, ~150 quest, offline, IT/EN | Prototipo funzionante |
+| 1 · App personale | Questionario, scheda, 150 quest, offline, IT/EN | In corso: online su cosasintetica.github.io/koinon |
 | 2 · Comunità | Server, gilde, quest collettive, certificazione a 3 | Da fare |
 | 3 · Grandi Opere | Collegamento a progetti reali | Da fare |
 | 4 · Store ed ente | App Android/iOS, ente senza scopo di lucro | Da fare |

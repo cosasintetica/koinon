@@ -66,6 +66,9 @@ export const en: Dict = {
 		overdue: 'Overdue',
 		verification: { self: 'On trust', evidence: 'With proof', peer: 'Certified by 3 people' },
 		peerLocked: 'Certified quests arrive with the community (Phase 2).',
+		cooldown: 'available again from',
+		repeat: 'Repeat earlier-grade quests (half XP)',
+		nextGrade: 'Next grade',
 		completed: 'Completed',
 		days: 'days',
 		honestyReminder: 'Only mark "Done" if you really did it. The only person you would fool is you.'
